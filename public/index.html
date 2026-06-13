@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgencyFlow Command Center</title>
+  <style>
+    :root {
+      --bg: #07111f;
+      --panel: #101b2d;
+      --panel-soft: #142238;
+      --border: #25344f;
+      --text: #eef5ff;
+      --muted: #9db0cc;
+      --blue: #38a3ff;
+      --green: #20d17d;
+      --purple: #8b5cf6;
+      --orange: #ffb84d;
+      --red: #ff5c7a;
+      --white: #ffffff;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(56, 163, 255, 0.18), transparent 35%),
+        radial-gradient(circle at top right, rgba(139, 92, 246, 0.16), transparent 35%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    .page {
+      width: min(1500px, 100%);
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .hero {
+      display: grid;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, rgba(16, 27, 45, 0.96), rgba(13, 23, 39, 0.96));
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -120px;
+      top: -120px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(56, 163, 255, 0.25), transparent 70%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #b9d7ff;
+      border: 1px solid rgba(56, 163, 255, 0.3);
+      background: rgba(56, 163, 255, 0.09);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(34px, 7vw, 74px);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+    }
+
+    .hero p {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      color: white;
+      background: #334155;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      opacity: 0.92;
+    }
+
+    .btn-blue {
+      background: linear-gradient(135deg, #1688f2, #38a3ff);
+    }
+
+    .btn-green {
+      background: linear-gradient(135deg, #16a34a, #20d17d);
+    }
+
+    .btn-purple {
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+    }
+
+    .btn-red {
+      background: linear-gradient(135deg, #e11d48, #fb7185);
+    }
+
+    .btn-orange {
+      background: linear-gradient(135deg, #ea580c, #ffb84d);
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0;
+    }
+
+    .stat {
+      background: rgba(16, 27, 45, 0.88);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .stat strong {
+      display: block;
+      color: var(--blue);
+      font-size: 32px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel {
+      background: rgba(16, 27, 45, 0.92);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel h2 {
+      margin: 0 0 16px;
+      font-size: 22px;
+      letter-spacing: -0.03em;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #c7d7ef;
+      font-weight: 900;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      background: #091222;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 13px 14px;
+      border-radius: 13px;
+      outline: none;
+      font: inherit;
+    }
+
+    textarea {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(56, 163, 255, 0.12);
+    }
+
+    .filters {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .table-wrap {
+      display: none;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1000px;
+      background: #091222;
+    }
+
+    th,
+    td {
+      padding: 13px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-size: 13px;
+      vertical-align: top;
+    }
+
+    th {
+      color: #a8c5ea;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-size: 11px;
+      background: #0d1728;
+    }
+
+    td {
+      color: #dce9ff;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 6px 9px;
+      font-size: 11px;
+      font-weight: 900;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .badge-blue {
+      color: #b9d7ff;
+      background: rgba(56, 163, 255, 0.12);
+      border-color: rgba(56, 163, 255, 0.24);
+    }
+
+    .badge-green {
+      color: #b9ffd8;
+      background: rgba(32, 209, 125, 0.12);
+      border-color: rgba(32, 209, 125, 0.25);
+    }
+
+    .badge-orange {
+      color: #ffe4b4;
+      background: rgba(255, 184, 77, 0.14);
+      border-color: rgba(255, 184, 77, 0.3);
+    }
+
+    .badge-red {
+      color: #ffc4cf;
+      background: rgba(255, 92, 122, 0.12);
+      border-color: rgba(255, 92, 122, 0.3);
+    }
+
+    .badge-purple {
+      color: #ddd1ff;
+      background: rgba(139, 92, 246, 0.14);
+      border-color: rgba(139, 92, 246, 0.28);
+    }
+
+    .cards {
+      display: grid;
+      gap: 12px;
+    }
+
+    .record-card {
+      border: 1px solid var(--border);
+      background: #091222;
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .record-card h3 {
+      margin: 0 0 6px;
+      font-size: 17px;
+    }
+
+    .record-card p {
+      margin: 4px 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .card-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .small-btn {
+      border: 0;
+      border-radius: 11px;
+      padding: 9px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      color: white;
+      background: #334155;
+    }
+
+    .message {
+      padding: 12px 14px;
+      border-radius: 14px;
+      margin-bottom: 14px;
+      display: none;
+      font-weight: 800;
+      font-size: 13px;
+    }
+
+    .message.success {
+      display: block;
+      background: rgba(32, 209, 125, 0.12);
+      color: #b9ffd8;
+      border: 1px solid rgba(32, 209, 125, 0.25);
+    }
+
+    .message.error {
+      display: block;
+      background: rgba(255, 92, 122, 0.12);
+      color: #ffc4cf;
+      border: 1px solid rgba(255, 92, 122, 0.25);
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      text-align: center;
+      padding: 28px 0 10px;
+      font-size: 13px;
+    }
+
+    @media (min-width: 760px) {
+      .page {
+        padding: 26px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .form-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .full {
+        grid-column: 1 / -1;
+      }
+
+      .filters {
+        grid-template-columns: 1.5fr 1fr 1fr 1fr auto auto;
+        align-items: end;
+      }
+    }
+
+    @media (min-width: 1050px) {
+      .hero {
+        grid-template-columns: 1.5fr 1fr;
+      }
+
+      .grid {
+        grid-template-columns: 420px 1fr;
+        align-items: start;
+      }
+
+      .table-wrap {
+        display: block;
+      }
+
+      .cards.lead-cards-desktop-hidden {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-card">
+        <div class="eyebrow">Agency Operations Dashboard</div>
+        <h1>Track every client lead from one command center.</h1>
+        <p>
+          AgencyFlow helps small marketing agencies track leads across multiple clients, monitor follow-up speed, send client reports, and prove campaign performance from one live dashboard.
+        </p>
+        <div class="hero-actions">
+          <button class="btn btn-green" onclick="loadDemoData()">Load Demo Data</button>
+<button class="btn btn-blue" onclick="scrollToLeads()">Manage Leads</button>
+<button class="btn btn-purple" onclick="downloadCsv()">Export CSV</button>
+<a class="btn btn-ghost" href="/health" target="_blank">Live API</a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="eyebrow">Client Report Snapshot</div>
+        
+        <h2 style="margin:0 0 12px; font-size:34px;">Agency-ready reporting</h2>
+<p>
+  Built for agencies that need lead tracking, SLA visibility, follow-up actions,
+  and simple reports for every client.
+</p>
+
+<div style="margin-top:22px; display:grid; gap:12px;">
+  <div class="record-card">
+    <h3>Weekly Client Report</h3>
+    <p>Total leads, high priority leads, average score, contacted leads, and overdue follow-ups.</p>
+  </div>
+
+  <div class="record-card">
+    <h3>White-label workflow</h3>
+    <p>Agencies can use AgencyFlow as a backend operations system for multiple clients.</p>
+  </div>
+</div>
+      </div>
+    </section>
+
+    <section class="stats-grid">
+      <div class="stat">
+        <strong id="totalClients">0</strong>
+        <span>Total Clients</span>
+      </div>
+      <div class="stat">
+        <strong id="totalLeads">0</strong>
+        <span>Total Leads</span>
+      </div>
+      <div class="stat">
+        <strong id="highPriorityLeads">0</strong>
+        <span>High Priority</span>
+      </div>
+      <div class="stat">
+        <strong id="overdueLeads">0</strong>
+        <span>Overdue Follow-ups</span>
+      </div>
+      <div class="stat">
+        <strong id="respondedLeads">0</strong>
+        <span>Responded Leads</span>
+      </div>
+      <div class="stat">
+        <strong id="averageScore">0</strong>
+        <span>Average Score</span>
+      </div>
+      <div class="stat">
+        <strong id="activeClients">0</strong>
+        <span>Active Clients</span>
+      </div>
+      <div class="stat">
+        <strong id="newLeads">0</strong>
+        <span>New Leads</span>
+      </div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Add Client</h2>
+        <div id="clientMessage" class="message"></div>
+        <form id="clientForm" class="form-grid">
+          <div class="full">
+            <label>Business Name</label>
+            <input name="business_name" placeholder="Example: Denver Roofing Pros" required />
+          </div>
+
+          <div>
+            <label>Niche</label>
+            <input name="niche" placeholder="Roofing, HVAC, Landscaping..." />
+          </div>
+
+          <div>
+            <label>CRM Name</label>
+            <input name="crm_name" placeholder="HubSpot / GoHighLevel / Not connected" />
+          </div>
+
+          <div>
+            <label>Owner Name</label>
+            <input name="owner_name" placeholder="Client owner name" />
+          </div>
+
+          <div>
+            <label>Owner Email</label>
+            <input name="owner_email" type="email" placeholder="client@example.com" />
+          </div>
+
+          <div class="full">
+            <label>Phone</label>
+            <input name="phone" placeholder="+1 555 123 4567" />
+          </div>
+
+          <div class="full">
+            <label>Notes</label>
+            <textarea name="notes" placeholder="Client notes, campaign notes, CRM setup notes..."></textarea>
+          </div>
+
+          <div class="full">
+            <button class="btn btn-green" type="submit">Add Client</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Add Lead</h2>
+        <div id="leadMessage" class="message"></div>
+        <form id="leadForm" class="form-grid">
+          <div class="full">
+            <label>Client</label>
+            <select name="client_id" id="clientSelect" required>
+              <option value="">Select client</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Lead Name</label>
+            <input name="lead_name" placeholder="Lead name" required />
+          </div>
+
+          <div>
+            <label>Email</label>
+            <input name="email" type="email" placeholder="lead@example.com" />
+          </div>
+
+          <div>
+            <label>Phone</label>
+            <input name="phone" placeholder="+1 555 000 1111" required />
+          </div>
+
+          <div>
+            <label>Service</label>
+            <input name="service" placeholder="Roof repair, landscaping, quote request..." required />
+          </div>
+
+          <div>
+            <label>Source</label>
+            <select name="source">
+              <option>Manual</option>
+              <option>Facebook Ads</option>
+              <option>Google Ads</option>
+              <option>Website Form</option>
+              <option>Landing Page</option>
+              <option>Referral</option>
+            </select>
+          </div>
+
+          <div>
+            <label>Campaign</label>
+            <input name="campaign" placeholder="June Roof Leads Campaign" />
+          </div>
+
+          <div>
+            <label>Budget</label>
+            <input name="budget" placeholder="$1500" />
+          </div>
+
+          <div class="full">
+            <label>Message</label>
+            <textarea name="message" placeholder="Lead message or request details..."></textarea>
+          </div>
+
+          <div class="full">
+            <button class="btn btn-blue" type="submit">Add Lead</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="panel" style="margin-top:18px;">
+      <div class="section-title">
+        <h2>Client Performance</h2>
+        <button class="btn btn-ghost" onclick="loadAll()">Refresh</button>
+      </div>
+      <div id="clientCards" class="cards"></div>
+    </section>
+
+    <section id="leadSection" class="panel" style="margin-top:18px;">
+      <div class="section-title">
+        <h2>Lead Management</h2>
+      </div>
+
+      <div class="filters">
+        <div>
+          <label>Search</label>
+          <input id="searchInput" placeholder="Search name, email, client, service..." />
+        </div>
+
+        <div>
+          <label>Client</label>
+          <select id="filterClient">
+            <option value="">All Clients</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Status</label>
+          <select id="filterStatus">
+            <option value="">All Statuses</option>
+            <option>New Lead</option>
+            <option>Contacted</option>
+            <option>Qualified</option>
+            <option>Booked</option>
+            <option>Won</option>
+            <option>Lost</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Priority</label>
+          <select id="filterPriority">
+            <option value="">All Priorities</option>
+            <option>High</option>
+            <option>Medium</option>
+            <option>Normal</option>
+          </select>
+        </div>
+
+        <button class="btn btn-blue" onclick="loadLeads()">Search</button>
+        <button class="btn btn-ghost" onclick="resetFilters()">Reset</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Lead</th>
+              <th>Client</th>
+              <th>Service</th>
+              <th>Status</th>
+              <th>Priority</th>
+              <th>SLA</th>
+              <th>Score</th>
+              <th>Source</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="leadTableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="leadCards" class="cards lead-cards-desktop-hidden"></div>
+    </section>
+
+    <p class="footer-note">
+      AgencyFlow Command Center · Supabase Database · Gmail Reports · Mobile-first dashboard
+    </p>
+  </main>
+
+  <script>
+    const state = {
+      clients: [],
+      leads: [],
+      dashboard: null,
+    };
+
+    function showMessage(id, type, text) {
+      const element = document.getElementById(id);
+      element.className = `message ${type}`;
+      element.textContent = text;
+      setTimeout(() => {
+        element.className = "message";
+        element.textContent = "";
+      }, 5000);
+    }
+
+    function badgeClass(value) {
+      if (["High", "Overdue", "Lost"].includes(value)) return "badge badge-red";
+      if (["Medium", "At Risk"].includes(value)) return "badge badge-orange";
+      if (["Responded", "Won", "Booked", "Qualified", "Active"].includes(value)) return "badge badge-green";
+      if (["Normal", "New Lead", "Contacted", "On Track"].includes(value)) return "badge badge-blue";
+      return "badge badge-purple";
+    }
+
+    function scrollToLeads() {
+      document.getElementById("leadSection").scrollIntoView({ behavior: "smooth" });
+    }
+
+    async function api(path, options = {}) {
+      const response = await fetch(path, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        ...options,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || data.error || "Request failed");
+      }
+
+      return data;
+    }
+
+    function formToObject(form) {
+      const formData = new FormData(form);
+      return Object.fromEntries(formData.entries());
+    }
+
+    async function loadDashboard() {
+      const response = await api("/dashboard");
+      state.dashboard = response.data;
+
+      document.getElementById("totalClients").textContent = response.data.totalClients;
+      document.getElementById("activeClients").textContent = response.data.activeClients;
+      document.getElementById("totalLeads").textContent = response.data.totalLeads;
+      document.getElementById("newLeads").textContent = response.data.newLeads;
+      document.getElementById("highPriorityLeads").textContent = response.data.highPriorityLeads;
+      document.getElementById("overdueLeads").textContent = response.data.overdueLeads;
+      document.getElementById("respondedLeads").textContent = response.data.respondedLeads;
+      document.getElementById("averageScore").textContent = response.data.averageScore;
+
+      renderClientCards(response.data.byClient || []);
+    }
+
+    async function loadClients() {
+      const response = await api("/clients");
+      state.clients = response.data;
+
+      const clientSelect = document.getElementById("clientSelect");
+      const filterClient = document.getElementById("filterClient");
+
+      clientSelect.innerHTML = `<option value="">Select client</option>`;
+      filterClient.innerHTML = `<option value="">All Clients</option>`;
+
+      state.clients.forEach((client) => {
+        const option = `<option value="${client.id}">${client.business_name}</option>`;
+        clientSelect.insertAdjacentHTML("beforeend", option);
+        filterClient.insertAdjacentHTML("beforeend", option);
+      });
+    }
+
+    async function loadLeads() {
+      const params = new URLSearchParams();
+
+      const search = document.getElementById("searchInput").value.trim();
+      const clientId = document.getElementById("filterClient").value;
+      const status = document.getElementById("filterStatus").value;
+      const priority = document.getElementById("filterPriority").value;
+
+      if (search) params.set("search", search);
+      if (clientId) params.set("client_id", clientId);
+      if (status) params.set("status", status);
+      if (priority) params.set("priority", priority);
+
+      const response = await api(`/leads?${params.toString()}`);
+      state.leads = response.data;
+
+      renderLeadTable(state.leads);
+      renderLeadCards(state.leads);
+    }
+
+    function renderClientCards(clients) {
+      const container = document.getElementById("clientCards");
+
+      if (!clients.length) {
+        container.innerHTML = `<div class="record-card"><p>No clients yet. Add your first agency client.</p></div>`;
+        return;
+      }
+
+      container.innerHTML = clients
+        .map((client) => {
+          return `
+            <div class="record-card">
+              <h3>${client.business_name}</h3>
+              <p>${client.niche || "No niche added"} · ${client.total_leads} leads · Avg score ${client.average_score}/100</p>
+              <p>
+                <span class="${badgeClass("Active")}">Active</span>
+                <span class="${badgeClass(client.high_priority > 0 ? "High" : "Normal")}">${client.high_priority} high priority</span>
+                <span class="${badgeClass(client.overdue > 0 ? "Overdue" : "On Track")}">${client.overdue} overdue</span>
+              </p>
+              <div class="card-actions">
+                <button class="small-btn btn-purple" onclick="sendClientReport(${client.id})">Send Report</button>
+                <button class="small-btn btn-ghost" onclick="filterByClient(${client.id})">View Leads</button>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function renderLeadTable(leads) {
+      const tbody = document.getElementById("leadTableBody");
+
+      if (!leads.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" class="muted">No leads found.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = leads
+        .map((lead) => {
+          return `
+            <tr>
+              <td>
+                <strong>${lead.lead_name}</strong><br>
+                <span class="muted">${lead.email || "No email"} · ${lead.phone}</span>
+              </td>
+              <td>${lead.client_name || "No client"}</td>
+              <td>${lead.service || "No service"}</td>
+              <td><span class="${badgeClass(lead.status)}">${lead.status}</span></td>
+              <td><span class="${badgeClass(lead.priority)}">${lead.priority}</span></td>
+              <td><span class="${badgeClass(lead.sla_status)}">${lead.sla_status}</span></td>
+              <td>${lead.lead_score}/100</td>
+              <td>${lead.source || "Manual"}</td>
+              <td>
+                <button class="small-btn btn-blue" onclick="sendLeadEmail(${lead.id})">Email</button>
+                <button class="small-btn btn-green" onclick="updateLeadStatus(${lead.id}, 'Contacted')">Contacted</button>
+                <button class="small-btn btn-purple" onclick="updateLeadStatus(${lead.id}, 'Booked')">Booked</button>
+                <button class="small-btn btn-red" onclick="updateLeadStatus(${lead.id}, 'Lost')">Lost</button>
+              </td>
+            </tr>
+          `;
+        })
+        .join("");
+    }
+
+    function renderLeadCards(leads) {
+      const container = document.getElementById("leadCards");
+
+      if (!leads.length) {
+        container.innerHTML = `<div class="record-card"><p>No leads found.</p></div>`;
+        return;
+      }
+
+      container.innerHTML = leads
+        .map((lead) => {
+          return `
+            <div class="record-card">
+              <h3>${lead.lead_name}</h3>
+              <p>${lead.client_name || "No client"} · ${lead.service || "No service"}</p>
+              <p>${lead.email || "No email"} · ${lead.phone}</p>
+              <p>
+                <span class="${badgeClass(lead.status)}">${lead.status}</span>
+                <span class="${badgeClass(lead.priority)}">${lead.priority}</span>
+                <span class="${badgeClass(lead.sla_status)}">${lead.sla_status}</span>
+              </p>
+              <p>Score: ${lead.lead_score}/100 · Source: ${lead.source || "Manual"}</p>
+              <div class="card-actions">
+                <button class="small-btn btn-blue" onclick="sendLeadEmail(${lead.id})">Email</button>
+                <button class="small-btn btn-green" onclick="updateLeadStatus(${lead.id}, 'Contacted')">Contacted</button>
+                <button class="small-btn btn-purple" onclick="updateLeadStatus(${lead.id}, 'Booked')">Booked</button>
+                <button class="small-btn btn-red" onclick="updateLeadStatus(${lead.id}, 'Lost')">Lost</button>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    async function sendLeadEmail(id) {
+      try {
+        await api(`/leads/${id}/send-email`, {
+          method: "POST",
+        });
+
+        await loadAll();
+        alert("Email sent successfully.");
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    async function sendClientReport(id) {
+      try {
+        await api(`/clients/${id}/send-report`, {
+          method: "POST",
+        });
+
+        alert("Client report sent successfully.");
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    async function updateLeadStatus(id, status) {
+      try {
+        await api(`/leads/${id}/status`, {
+          method: "PUT",
+          body: JSON.stringify({ status }),
+        });
+
+        await loadAll();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    function filterByClient(id) {
+      document.getElementById("filterClient").value = String(id);
+      loadLeads();
+      scrollToLeads();
+    }
+
+    function resetFilters() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("filterClient").value = "";
+      document.getElementById("filterStatus").value = "";
+      document.getElementById("filterPriority").value = "";
+      loadLeads();
+    }
+async function loadDemoData() {
+  const confirmLoad = confirm("Load demo clients and leads into AgencyFlow?");
+  if (!confirmLoad) return;
+
+  try {
+    await api("/demo/seed", {
+      method: "POST",
+    });
+
+    await loadAll();
+    alert("Demo data loaded successfully.");
+  } catch (error) {
+    alert(error.message);
+  }
+}
+    function downloadCsv() {
+      const params = new URLSearchParams();
+
+      const search = document.getElementById("searchInput").value.trim();
+      const clientId = document.getElementById("filterClient").value;
+      const status = document.getElementById("filterStatus").value;
+      const priority = document.getElementById("filterPriority").value;
+
+      if (search) params.set("search", search);
+      if (clientId) params.set("client_id", clientId);
+      if (status) params.set("status", status);
+      if (priority) params.set("priority", priority);
+
+      window.location.href = `/export/csv?${params.toString()}`;
+    }
+
+    async function loadAll() {
+      await loadClients();
+      await loadDashboard();
+      await loadLeads();
+    }
+
+    document.getElementById("clientForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      try {
+        const payload = formToObject(event.target);
+
+        await api("/clients", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+
+        event.target.reset();
+        showMessage("clientMessage", "success", "Client added successfully.");
+        await loadAll();
+      } catch (error) {
+        showMessage("clientMessage", "error", error.message);
+      }
+    });
+
+    document.getElementById("leadForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      try {
+        const payload = formToObject(event.target);
+
+        await api("/leads", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+
+        event.target.reset();
+        showMessage("leadMessage", "success", "Lead added successfully.");
+        await loadAll();
+      } catch (error) {
+        showMessage("leadMessage", "error", error.message);
+      }
+    });
+
+    loadAll().catch((error) => {
+      console.error(error);
+      alert("Failed to load AgencyFlow. Check backend or environment variables.");
+    });
+  </script>
+</body>
+</html>
